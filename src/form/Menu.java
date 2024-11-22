@@ -229,7 +229,7 @@ public class Menu extends javax.swing.JInternalFrame {
          DefaultTableModel model = (DefaultTableModel) Table.getModel();
         model.addRow(new Object[]{id, nama, harga});
 
-        Idmenu.setText("");
+        Idmenu.setText("");   
         Namamenu.setText("");
         Harga.setText("");
         

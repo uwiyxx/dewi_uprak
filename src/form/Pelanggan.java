@@ -9,20 +9,75 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.Koneksi;
 
 /**
  *
  * @author Client
  */
 public class Pelanggan extends javax.swing.JInternalFrame {
+    private DefaultTableModel model;
+    String id_pelanggan, nama_pelanggan, jenis_kelamin, no_hp, alamat;
     
     /**
      * Creates new form Pelanggan
      */
     public Pelanggan() {
         initComponents();
+      
+        
+        model = new DefaultTableModel();
+        Table.setModel(model);
+        model.addColumn("ID Pelanggan");
+        model.addColumn("Nama Pelanggan");
+        model.addColumn("Jenis Kelamin");
+        model.addColumn("No Hp");
+        model.addColumn("Alamat");
+        
+    }
+    public void GetData(){
+        model.getDataVector().removeAllElements();
+        model.fireTableDataChanged();
+        try{
+            Connection conn = Koneksi.koneksiDb();
+            PreparedStatement pst = conn.prepareStatement(query);
+            String sql = "Select * From pelanggan";
+            ResultSet rs = pst.executeQuery();
+            
+            while (rs.next()){
+                Object[] obj = new Object[6];
+                obj [0] = rs.getString("id_pelanggan");
+                obj [1] = rs.getString("nama_pelanggan");
+                obj [2] = rs.getString("jenis_kelamin");
+                obj [3] = rs.getString("no_hp");
+                obj [4] = rs.getString("alamat");
+                
+                model.addRow(obj);
+            }
+        }catch (SQLException error){
+            JOptionPane.showMessageDialog(null, error.getMessage());
+        }
+    }
+    
+    public void SelectData(){
+        int i = Table.getSelectedRow();
+        if (i == -1) 
+        {
+            return;
+        }Tidpelanggan.setText(""+model.getValueAt(1, 0));
+        Tnama.setText(""+model.getValueAt(i, 1));
+        if ("P".equals(model.getValueAt(i, 2).toString())) {
+            Rperempuan.setSelected(true);
+        } else {
+            Rlaki.setSelected(true);
+        }
+        Tnohp.setText(""+model.getValueAt(i, 3));
+        Talamat.setText(""+model.getValueAt(i, 4));
+        hapus.setEnabled(true);
+        edit.setEnabled(true);
     }
 
     /**
@@ -47,9 +102,9 @@ public class Pelanggan extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         Tnohp = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        simpan = new javax.swing.JButton();
+        edit = new javax.swing.JButton();
+        hapus = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         Talamat = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
@@ -80,28 +135,28 @@ public class Pelanggan extends javax.swing.JInternalFrame {
 
         jLabel5.setText("Alamat");
 
-        jButton1.setBackground(new java.awt.Color(51, 255, 51));
-        jButton1.setText("Simpan");
-        jButton1.setContentAreaFilled(false);
-        jButton1.setOpaque(true);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        simpan.setBackground(new java.awt.Color(51, 255, 51));
+        simpan.setText("Simpan");
+        simpan.setContentAreaFilled(false);
+        simpan.setOpaque(true);
+        simpan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                simpanActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(0, 51, 255));
-        jButton2.setText("Edit");
-        jButton2.setContentAreaFilled(false);
-        jButton2.setOpaque(true);
+        edit.setBackground(new java.awt.Color(0, 51, 255));
+        edit.setText("Edit");
+        edit.setContentAreaFilled(false);
+        edit.setOpaque(true);
 
-        jButton3.setBackground(new java.awt.Color(255, 0, 0));
-        jButton3.setText("Hapus");
-        jButton3.setContentAreaFilled(false);
-        jButton3.setOpaque(true);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        hapus.setBackground(new java.awt.Color(255, 0, 0));
+        hapus.setText("Hapus");
+        hapus.setContentAreaFilled(false);
+        hapus.setOpaque(true);
+        hapus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                hapusActionPerformed(evt);
             }
         });
 
@@ -145,12 +200,12 @@ public class Pelanggan extends javax.swing.JInternalFrame {
                             .addGap(106, 106, 106))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                             .addGap(31, 31, 31)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(edit, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(35, 35, 35)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(hapus, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(74, 74, 74)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(simpan, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -181,11 +236,11 @@ public class Pelanggan extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(30, 30, 30)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(simpan, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(edit, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(hapus, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -236,51 +291,47 @@ public class Pelanggan extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_hapusActionPerformed
 
     private void TidpelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TidpelangganActionPerformed
         // TODO add your handling code here:
       
     }//GEN-LAST:event_TidpelangganActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simpanActionPerformed
         // TODO add your handling code here:
-        String idpelanggan =this.Tidpelanggan.getText();
-        String nama =this.Tnama.getText();
-        String nohp =this.Tnohp.getText();
-        String alamat =this.Talamat.getText();
-        String laki =this.Rlaki.getText();
-        String perempuan =this.Rperempuan.getText();
-        
-        if (idpelanggan.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Id Pelanggan wajib diisi!!");
-            return;
-        }
-        if (nama.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nama Pelanggan wajib diisi!!");
-            return;
-        }
-        if (nohp.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No Hp wajib diisi!!");
-            return;
-        }
-        if (alamat.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Alamat wajib diisi!!");
-            return;
-        }
-        
-         DefaultTableModel model = (DefaultTableModel) Table.getModel();
-        model.addRow(new Object[]{idpelanggan, nama, nohp, alamat});
-
-        Tidpelanggan.setText("");
-        Tnama.setText("");
-        Rlaki.setText("");
-        Rperempuan.setText("");
-        Tnohp.setText("");
-        Talamat.setText("");
-    }//GEN-LAST:event_jButton1ActionPerformed
+//        String idpelanggan =this.Tidpelanggan.getText();
+//        String nama =this.Tnama.getText();
+//        String nohp =this.Tnohp.getText();
+//        String alamat =this.Talamat.getText();;
+//        
+//        if (idpelanggan.isEmpty()) {
+//            JOptionPane.showMessageDialog(this, "Id Pelanggan wajib diisi!!");
+//            return;
+//        }
+//        if (nama.isEmpty()) {
+//            JOptionPane.showMessageDialog(this, "Nama Pelanggan wajib diisi!!");
+//            return;
+//        }
+//        if (nohp.isEmpty()) {
+//            JOptionPane.showMessageDialog(this, "No Hp wajib diisi!!");
+//            return;
+//        }
+//        if (alamat.isEmpty()) {
+//            JOptionPane.showMessageDialog(this, "Alamat wajib diisi!!");
+//            return;
+//        }
+//        
+//         DefaultTableModel model = (DefaultTableModel) Table.getModel();
+//        model.addRow(new Object[]{idpelanggan, nama, nohp, alamat});
+//
+//        Tidpelanggan.setText("");
+//        Tnama.setText("");
+//        Tnohp.setText("");
+//        Talamat.setText("");
+    }//GEN-LAST:event_simpanActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -293,9 +344,8 @@ public class Pelanggan extends javax.swing.JInternalFrame {
     private javax.swing.JTextField Tnohp;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton edit;
+    private javax.swing.JButton hapus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -305,5 +355,6 @@ public class Pelanggan extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton simpan;
     // End of variables declaration//GEN-END:variables
 }

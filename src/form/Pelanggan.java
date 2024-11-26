@@ -114,27 +114,47 @@ public class Pelanggan extends javax.swing.JInternalFrame {
        }
    }
    
-//   public void UbahData(){
-//       LoadData();
-//        
-//       try{
-//           com.mysql.jdbc.Statement stat = (com.mysql.jdbc.Statement) Koneksi.koneksiDb().createStatement();
-//           String sql = "Update pelanggan Set nama_pelanggan = '"+nama_pelanggan+"',";
-//            +"jenis_kelamin = '"+jenis_kelamin+"',"
-//            +"no_hp = '"+no_hp+"',"
-//            +"alamat = '"+alamat+"' WHERE id_pelanggan = '"+id_pelanggan+"'";
-//        
-//        PreparedStatement p =(PreparedStatement) Koneksi.koneksiDb().prepareStatement(sql);
-//        p.executeUpdate();
-//        
-//           GetData();
-//           Kosongkan();
-//           SelectData();
-//           
-//           JOptionPane.showMessageDialog(null, "Data Berhasil Diubah");
-//       }catch(SQLException err){
-//           JOptionPane.showMessageDialog(null, err.getMessage());
-//   }
+   public void UbahData(){
+       LoadData();
+        
+       try{
+           com.mysql.jdbc.Statement stat = (com.mysql.jdbc.Statement) Koneksi.koneksiDb().createStatement();
+           String sql = "Update pelanggan Set nama_pelanggan = '"+nama_pelanggan+"',"
+            +"jenis_kelamin = '"+jenis_kelamin+"',"
+            +"no_hp = '"+no_hp+"',"
+            +"alamat = '"+alamat+"' WHERE id_pelanggan = '"+id_pelanggan+"'";
+        
+        PreparedStatement p =(PreparedStatement) Koneksi.koneksiDb().prepareStatement(sql);
+        p.executeUpdate();
+        
+           GetData();
+           Kosongkan();
+           SelectData();
+           
+           JOptionPane.showMessageDialog(null, "Data Berhasil Diubah");
+       }catch(SQLException err){
+           JOptionPane.showMessageDialog(null, err.getMessage());
+   }
+}
+   
+   public void HapusData(){
+       LoadData();
+       
+       int pesan = JOptionPane.showConfirmDialog(null, "Anda yakin ingin menghapus data pelanggan "+id_pelanggan+"?","konfirmasi",JOptionPane.OK_CANCEL_OPTION);
+       if(pesan == JOptionPane.OK_OPTION){
+           try{
+               String sql  = "Delete From pelanggan Where id_pelanggan = '"+id_pelanggan+"'";
+               PreparedStatement p = Koneksi.koneksiDb().prepareStatement(sql);
+               p.execute();
+               
+               GetData();
+               
+               JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
+           }catch(SQLException error){
+               JOptionPane.showConfirmDialog(null, error.getMessage());
+           }
+       }
+   }
    
    public void Nonaktif(){
        Tidpelanggan.setEnabled(true);
@@ -348,6 +368,11 @@ public class Pelanggan extends javax.swing.JInternalFrame {
                 "ID Pelanggan", "Nama Pelanggan", "Jenis Kelamin", "No Hp", "Alamat"
             }
         ));
+        Table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(Table);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -387,6 +412,12 @@ public class Pelanggan extends javax.swing.JInternalFrame {
 
     private void hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapusActionPerformed
         // TODO add your handling code here:
+        HapusData();
+        Kosongkan();
+        Nonaktif();
+        simpan.setEnabled(true);
+        edit.setEnabled(true);
+        hapus.setEnabled(true);
     }//GEN-LAST:event_hapusActionPerformed
 
     private void TidpelangganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TidpelangganActionPerformed
@@ -402,46 +433,25 @@ public class Pelanggan extends javax.swing.JInternalFrame {
         simpan.setEnabled(true);
         edit.setEnabled(true);
         hapus.setEnabled(true);
-//        String idpelanggan =this.Tidpelanggan.getText();
-//        String nama =this.Tnama.getText();
-//        String nohp =this.Tnohp.getText();
-//        String alamat =this.Talamat.getText();;
-//        
-//        if (idpelanggan.isEmpty()) {
-//            JOptionPane.showMessageDialog(this, "Id Pelanggan wajib diisi!!");
-//            return;
-//        }
-//        if (nama.isEmpty()) {
-//            JOptionPane.showMessageDialog(this, "Nama Pelanggan wajib diisi!!");
-//            return;
-//        }
-//        if (nohp.isEmpty()) {
-//            JOptionPane.showMessageDialog(this, "No Hp wajib diisi!!");
-//            return;
-//        }
-//        if (alamat.isEmpty()) {
-//            JOptionPane.showMessageDialog(this, "Alamat wajib diisi!!");
-//            return;
-//        }
-//        
-//         DefaultTableModel model = (DefaultTableModel) Table.getModel();
-//        model.addRow(new Object[]{idpelanggan, nama, nohp, alamat});
-//
-//        Tidpelanggan.setText("");
-//        Tnama.setText("");
-//        Tnohp.setText("");
-//        Talamat.setText("");
     }//GEN-LAST:event_simpanActionPerformed
 
     private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
         // TODO add your handling code here:
-//        UbahData();
+        UbahData();
         Kosongkan();
         Nonaktif();
         simpan.setEnabled(true);
         edit.setEnabled(true);
         hapus.setEnabled(true);
     }//GEN-LAST:event_editActionPerformed
+
+    private void TableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableMouseClicked
+        // TODO add your handling code here:
+       SelectData();
+        Aktif();
+        Tidpelanggan.setEnabled(false);
+        simpan.setEnabled(false);
+    }//GEN-LAST:event_TableMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

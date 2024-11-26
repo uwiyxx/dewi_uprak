@@ -27,7 +27,7 @@ public class Pelanggan extends javax.swing.JInternalFrame {
      */
     public Pelanggan() {
         initComponents();
-      
+        Nonaktif();
         
         model = new DefaultTableModel();
         Table.setModel(model);
@@ -37,15 +37,16 @@ public class Pelanggan extends javax.swing.JInternalFrame {
         model.addColumn("No Hp");
         model.addColumn("Alamat");
         
+        GetData();
+        
     }
     public void GetData(){
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
         try{
-            Connection conn = Koneksi.koneksiDb();
-            PreparedStatement pst = conn.prepareStatement(query);
+            Statement stat = (Statement) Koneksi.koneksiDb().createStatement();
             String sql = "Select * From pelanggan";
-            ResultSet rs = pst.executeQuery();
+            ResultSet rs = stat.executeQuery(sql);
             
             while (rs.next()){
                 Object[] obj = new Object[6];
@@ -80,6 +81,94 @@ public class Pelanggan extends javax.swing.JInternalFrame {
         edit.setEnabled(true);
     }
 
+   public void LoadData(){
+       id_pelanggan = Tidpelanggan.getText();
+       nama_pelanggan = Tnama.getText();
+       jenis_kelamin = null;
+       if (Rlaki.isSelected()) {
+           jenis_kelamin = "L";
+       } else if(Rperempuan.isSelected()){
+           jenis_kelamin = "P";
+       }
+       no_hp = Tnohp.getText();
+       alamat = Talamat.getText();
+   }
+   
+   public void SimpanData(){
+       LoadData();
+       
+          try {
+            Connection conn = Koneksi.koneksiDb();
+            String query = "INSERT INTO pelanggan (id_pelanggan, nama_pelanggan, jenis_kelamin, no_hp, alamat) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement pst = conn.prepareStatement(query);
+           pst.setString(1, id_pelanggan);
+           pst.setString(2, nama_pelanggan);
+           pst.setString(3, jenis_kelamin);
+           pst.setString(4, no_hp);
+           pst.setString(5, alamat);
+           pst.executeUpdate();
+           JOptionPane.showMessageDialog(null, "Data berhasil disimpan!");
+           GetData();
+       } catch (SQLException e) {
+           JOptionPane.showMessageDialog(null, "Gagal menyimpan data " + e.getMessage());
+       }
+   }
+   
+//   public void UbahData(){
+//       LoadData();
+//        
+//       try{
+//           com.mysql.jdbc.Statement stat = (com.mysql.jdbc.Statement) Koneksi.koneksiDb().createStatement();
+//           String sql = "Update pelanggan Set nama_pelanggan = '"+nama_pelanggan+"',";
+//            +"jenis_kelamin = '"+jenis_kelamin+"',"
+//            +"no_hp = '"+no_hp+"',"
+//            +"alamat = '"+alamat+"' WHERE id_pelanggan = '"+id_pelanggan+"'";
+//        
+//        PreparedStatement p =(PreparedStatement) Koneksi.koneksiDb().prepareStatement(sql);
+//        p.executeUpdate();
+//        
+//           GetData();
+//           Kosongkan();
+//           SelectData();
+//           
+//           JOptionPane.showMessageDialog(null, "Data Berhasil Diubah");
+//       }catch(SQLException err){
+//           JOptionPane.showMessageDialog(null, err.getMessage());
+//   }
+   
+   public void Nonaktif(){
+       Tidpelanggan.setEnabled(true);
+       Tnama.setEnabled(true);
+       Rlaki.setEnabled(true);
+       Rperempuan.setEnabled(true);
+       Tnohp.setEnabled(true);
+       Talamat.setEnabled(true);
+       simpan.setEnabled(true);
+       edit.setEnabled(true);
+       hapus.setEnabled(true);
+   }
+   
+   public void Aktif(){
+       Tidpelanggan.setEnabled(true);
+       Tnama.setEnabled(true);
+       Rlaki.setEnabled(true);
+       Rperempuan.setEnabled(true);
+       Tnohp.setEnabled(true);
+       Talamat.setEnabled(true);
+       simpan.setEnabled(true);
+       edit.setEnabled(true);
+       hapus.setEnabled(true);
+       Tnama.requestFocus();
+   }
+   
+   public void Kosongkan(){
+       Tnama.setText("");
+       Rlaki.isSelected();
+       Rperempuan.isSelected();
+       Tnohp.setText("");
+       Talamat.setText("");
+
+   }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -149,6 +238,11 @@ public class Pelanggan extends javax.swing.JInternalFrame {
         edit.setText("Edit");
         edit.setContentAreaFilled(false);
         edit.setOpaque(true);
+        edit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editActionPerformed(evt);
+            }
+        });
 
         hapus.setBackground(new java.awt.Color(255, 0, 0));
         hapus.setText("Hapus");
@@ -302,6 +396,12 @@ public class Pelanggan extends javax.swing.JInternalFrame {
 
     private void simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simpanActionPerformed
         // TODO add your handling code here:
+        SimpanData();
+        Kosongkan();
+        Nonaktif();
+        simpan.setEnabled(true);
+        edit.setEnabled(true);
+        hapus.setEnabled(true);
 //        String idpelanggan =this.Tidpelanggan.getText();
 //        String nama =this.Tnama.getText();
 //        String nohp =this.Tnohp.getText();
@@ -332,6 +432,16 @@ public class Pelanggan extends javax.swing.JInternalFrame {
 //        Tnohp.setText("");
 //        Talamat.setText("");
     }//GEN-LAST:event_simpanActionPerformed
+
+    private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
+        // TODO add your handling code here:
+//        UbahData();
+        Kosongkan();
+        Nonaktif();
+        simpan.setEnabled(true);
+        edit.setEnabled(true);
+        hapus.setEnabled(true);
+    }//GEN-LAST:event_editActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

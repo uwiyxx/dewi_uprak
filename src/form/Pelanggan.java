@@ -21,7 +21,6 @@ import model.Koneksi;
 public class Pelanggan extends javax.swing.JInternalFrame {
     private DefaultTableModel model;
     String id_pelanggan, nama_pelanggan, jenis_kelamin, no_hp, alamat;
-    
     /**
      * Creates new form Pelanggan
      */
@@ -50,7 +49,7 @@ public class Pelanggan extends javax.swing.JInternalFrame {
             
             while (rs.next()){
                 Object[] obj = new Object[6];
-                obj [0] = rs.getString("id_pelanggan");
+                obj [0] = rs.getInt("id_pelanggan");
                 obj [1] = rs.getString("nama_pelanggan");
                 obj [2] = rs.getString("jenis_kelamin");
                 obj [3] = rs.getString("no_hp");
@@ -80,6 +79,7 @@ public class Pelanggan extends javax.swing.JInternalFrame {
         hapus.setEnabled(true);
         edit.setEnabled(true);
     }
+    
 
    public void LoadData(){
        id_pelanggan = Tidpelanggan.getText();
@@ -449,8 +449,8 @@ public class Pelanggan extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
        SelectData();
         Aktif();
-        Tidpelanggan.setEnabled(false);
-        simpan.setEnabled(false);
+        Tidpelanggan.setEnabled(true);
+        simpan.setEnabled(true);
     }//GEN-LAST:event_TableMouseClicked
 
 
